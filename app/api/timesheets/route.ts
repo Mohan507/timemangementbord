@@ -22,13 +22,15 @@ import { mockTimesheets } from "../../lib/mockTimesheets"
 
 export async function PUT(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: { params: Promise<Record<string, string>> }
 ) {
-  const { id } = await context.params
+  const params = await context.params
+  const id = Number(params.id)
+
   const body = await request.json()
 
   const index = mockTimesheets.findIndex(
-    (item) => item.id === Number(id)
+    (item) => item.id === id
   )
 
   if (index === -1) {
@@ -40,7 +42,7 @@ export async function PUT(
 
   mockTimesheets[index] = {
     ...mockTimesheets[index],
-    ...body
+    ...body,
   }
 
   return NextResponse.json(mockTimesheets[index])
